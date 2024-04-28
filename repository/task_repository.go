@@ -2,8 +2,10 @@ package repository
 
 import (
 	"BookAPI/model"
+	"fmt"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type IBookRepository interface {
@@ -39,6 +41,17 @@ func (br *bookRepository) GetBookById(book *model.Book, userId uint, bookId uint
 func (br *bookRepository) CreateBook(book *model.Book) error {
 	if err := br.db.Create(book).Error; err != nil {
 		return err
+	}
+	return nil
+}
+
+func (br *bookRepository) UpdateBook(book *model.Book, userId uint, bookId uint) error {
+	result := br.db.Model(book).Clauses(clause.Returning{}).Where("id=? AND user_id=?", bookId, userId).Update("title", book.Title)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected < 1 {
+		return fmt.Errorf("object does not exsit")
 	}
 	return nil
 }
