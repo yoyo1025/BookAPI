@@ -35,3 +35,10 @@ func (br *bookRepository) GetBookById(book *model.Book, userId uint, bookId uint
 	}
 	return nil
 }
+
+func (br *bookRepository) CreateBook(book *model.Book) error {
+	if err := br.db.Create(book).Error; err != nil {
+		return err
+	}
+	return nil
+}
