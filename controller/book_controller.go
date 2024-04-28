@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"BookAPI/model"
 	"BookAPI/usecase"
 	"net/http"
 	"strconv"
@@ -48,4 +49,21 @@ func (bc *bookController) GetBookById(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusOK, bookRes)
+}
+
+func (bc *bookController) CreateBook(c echo.Context) error {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	userId := claims["user_id"]
+
+	book := model.Book{}
+	if err := c.Bind(&book); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	book.UserId = uint(userId.(float64))
+	bookRes, err := bc.bu.CreateBook(book)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusCreated, bookRes)
 }
