@@ -21,3 +21,21 @@ type bookUsecase struct {
 func NewBookUsecase(br repository.IBookRepository) IBookUsecase {
 	return &bookUsecase{br}
 }
+
+func (bu *bookUsecase) GetAllBooks(userId uint) ([]model.BookResponse, error) {
+	books := []model.Book{}
+	if err := bu.br.GetAllBooks(&books, userId); err != nil {
+		return nil, err
+	}
+	resBooks := []model.BookResponse{}
+	for _, v := range books {
+		t := model.BookResponse{
+			ID: v.ID,
+			Title: v.Title,
+			CreatedAt: v.CreatedAt,
+			UpdatedAt: v.UpdatedAt,
+		}
+		resBooks = append(resBooks, t)
+	}
+	return resBooks, nil
+}
