@@ -21,3 +21,10 @@ type bookRepository struct {
 func NewBookRepository(db *gorm.DB) IBookRepository {
 	return &bookRepository{db}
 }
+
+func (br *bookRepository) GetAllBooks(books *[]model.Book, userId uint) error {
+	if err := br.db.Joins("User").Where("user_id=?", userId).Order("created_at").Find(books).Error; err != nil {
+		return err
+	}
+	return nil
+}
