@@ -17,3 +17,7 @@ type IBookRepository interface {
 type bookRepository struct {
 	db *gorm.DB
 }
+
+func NewBookRepository(db *gorm.DB) IBookRepository {
+	return &bookRepository{db}
+}
