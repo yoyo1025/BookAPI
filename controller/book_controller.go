@@ -18,7 +18,7 @@ type IBookController interface {
 }
 
 type bookController struct {
-	bc usecase.IBookUsecase
+	bu usecase.IBookUsecase
 }
 
 func NewBookController(bu usecase.IBookUsecase) IBookController {
@@ -30,7 +30,7 @@ func (bc *bookController) GetAllBooks(c echo.Context) error {
 	claims := user.Claims.(jwt.MapClaims)
 	userId := claims["user_id"]
 
-	booksRes, err := bc.bc.GetAllBooks(uint(userId.(float64)))
+	booksRes, err := bc.bu.GetAllBooks(uint(userId.(float64)))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -43,7 +43,7 @@ func (bc *bookController) GetBookById(c echo.Context) error {
 	userId := claims["user_id"]
 	id := c.Param("taskId")
 	bookId, _  := strconv.Atoi(id)
-	bookRes, err := bc.bc.GetBookById(uint(userId.(float64)), uint(bookId))
+	bookRes, err := bc.bu.GetBookById(uint(userId.(float64)), uint(bookId))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
