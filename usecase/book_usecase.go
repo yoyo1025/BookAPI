@@ -39,3 +39,17 @@ func (bu *bookUsecase) GetAllBooks(userId uint) ([]model.BookResponse, error) {
 	}
 	return resBooks, nil
 }
+
+func (bu *bookUsecase) GetBookById(userId uint, bookId uint) (model.BookResponse, error) {
+	book := model.Book{}
+	if err := bu.br.GetBookById(&book, userId, bookId); err != nil {
+		return model.BookResponse{}, err
+	}
+	resBook := model.BookResponse{
+		ID:        book.ID,
+		Title:     book.Title,
+		CreatedAt: book.CreatedAt,
+		UpdatedAt: book.UpdatedAt,
+	}
+	return resBook, nil
+}
