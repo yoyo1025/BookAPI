@@ -42,7 +42,7 @@ func (bc *bookController) GetBookById(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	userId := claims["user_id"]
-	id := c.Param("taskId")
+	id := c.Param("bookId")
 	bookId, _  := strconv.Atoi(id)
 	bookRes, err := bc.bu.GetBookById(uint(userId.(float64)), uint(bookId))
 	if err != nil {
@@ -66,4 +66,22 @@ func (bc *bookController) CreateBook(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusCreated, bookRes)
+}
+
+func (bc *bookController) UpdateBook(c echo.Context) error {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	userId := claims["user_id"]
+	id := c.Param("bookId")
+	bookId, _ := strconv.Atoi(id)
+
+	book := model.Book{}
+	if err := c.Bind(&book); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	bookRes, err := bc.bu.UpdateBook(book, uint(userId.(float64)), uint(bookId))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusOK, bookRes)
 }
