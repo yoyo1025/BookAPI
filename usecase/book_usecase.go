@@ -66,3 +66,16 @@ func (bu *bookUsecase) CreateBook(book model.Book) (model.BookResponse, error) {
 	}
 	return resBook, nil
 }
+
+func (bu *bookUsecase) UpdateBook(book model.Book, userId uint, bookId uint) (model.BookResponse, error) {
+	if err := bu.br.UpdateBook(&book, userId, bookId); err != nil {
+		return model.BookResponse{}, err
+	}
+	resBook := model.BookResponse{
+		ID:        book.ID,
+		Title:     book.Title,
+		CreatedAt: book.CreatedAt,
+		UpdatedAt: book.UpdatedAt,
+	}
+	return resBook, nil
+}
