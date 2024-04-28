@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func NewRouter(uc controller.IUserController) *echo.Echo {
+func NewRouter(uc controller.IUserController, bc controller.IBookController) *echo.Echo {
 	e := echo.New()
 	e.POST("/signup", uc.SignUp)
 	e.POST("/login", uc.LogIn)
@@ -18,5 +18,10 @@ func NewRouter(uc controller.IUserController) *echo.Echo {
 		SigningKey: []byte(os.Getenv("SELECT")),
 		TokenLookup: "cookie:token",
 	}))
+	t.GET("", bc.GetAllBooks)
+	t.GET("/:bookId", bc.GetBookById)
+	t.POST("", bc.CreateBook)
+	t.PUT("/:bookId", bc.UpdateBook)
+	t.DELETE("/:bookId", bc.DeleteBook)
 	return e
 }
