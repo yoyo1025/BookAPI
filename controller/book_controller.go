@@ -1,6 +1,10 @@
 package controller
 
-import "github.com/labstack/echo/v4"
+import (
+	"BookAPI/usecase"
+
+	"github.com/labstack/echo/v4"
+)
 
 type IBookController interface {
 	GetAllBooks(c echo.Context) error
@@ -8,4 +12,8 @@ type IBookController interface {
 	CreateBook(c echo.Context) error
 	UpdateBook(c echo.Context) error
 	DeleteBook(c echo.Context) error
+}
+
+type bookController struct {
+	bc usecase.IBookUsecase
 }
