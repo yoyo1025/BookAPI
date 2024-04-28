@@ -17,3 +17,7 @@ type IBookController interface {
 type bookController struct {
 	bc usecase.IBookUsecase
 }
+
+func NewBookController(bu usecase.IBookUsecase) IBookController {
+	return &bookController{bu}	
+}
