@@ -17,3 +17,7 @@ type IBookUsecase interface {
 type bookUsecase struct {
 	br repository.IBookRepository
 }
+
+func NewBookUsecase(br repository.IBookRepository) IBookUsecase {
+	return &bookUsecase{br}
+}
