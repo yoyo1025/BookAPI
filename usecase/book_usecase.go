@@ -79,3 +79,10 @@ func (bu *bookUsecase) UpdateBook(book model.Book, userId uint, bookId uint) (mo
 	}
 	return resBook, nil
 }
+
+func (bu *bookUsecase) DeleteBook(userId uint, bookId uint) error {
+	if err := bu.br.DeleteBook(userId, bookId); err != nil {
+		return err
+	}
+	return nil
+}
