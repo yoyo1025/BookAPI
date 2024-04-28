@@ -55,3 +55,14 @@ func (br *bookRepository) UpdateBook(book *model.Book, userId uint, bookId uint)
 	}
 	return nil
 }
+
+func (br *bookRepository) DeleteBook(userId uint, bookId uint) error {
+	result := br.db.Where("id=? AND user_id=?", bookId, userId).Delete(&model.Book{})
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected < 1 {
+		return fmt.Errorf("object does not exist")
+	}
+	return nil
+}
