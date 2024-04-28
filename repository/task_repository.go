@@ -28,3 +28,10 @@ func (br *bookRepository) GetAllBooks(books *[]model.Book, userId uint) error {
 	}
 	return nil
 }
+
+func (br *bookRepository) GetBookById(book *model.Book, userId uint, bookId uint) error {
+	if err := br.db.Joins("User").Where("user_id=?", userId).First(book, bookId).Error; err != nil {
+		return err 
+	}
+	return nil
+}
