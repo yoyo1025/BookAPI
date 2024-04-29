@@ -21,6 +21,6 @@ func (bv *bookValidator) BookValidate(book model.Book) error {
 		validation.Field(
 			&book.Title,
 			validation.Required.Error("title is required"),
-			validation.RuneLength(1, 10).Error("limited max 10 char"),
+			validation.RuneLength(1, 30).Error("limited max 10 char"),
 		))
 }
