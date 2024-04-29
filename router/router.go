@@ -33,7 +33,7 @@ func NewRouter(uc controller.IUserController, bc controller.IBookController) *ec
 	e.GET("/csrf", uc.CsrfToken)
 	t := e.Group("/books")
 	t.Use(echojwt.WithConfig(echojwt.Config{
-		SigningKey: []byte(os.Getenv("SELECT")),
+		SigningKey: []byte(os.Getenv("SECRET")),
 		TokenLookup: "cookie:token",
 	}))
 	t.GET("", bc.GetAllBooks)
