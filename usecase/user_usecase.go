@@ -23,8 +23,8 @@ type userUsecase struct {
 }
 
 // usecaseにrepositoryをDIするためのコンストラクタ
-func NewUserUsecase(ur repository.IUserRepository) IUserUsecase {
-	return &userUsecase{ur}
+func NewUserUsecase(ur repository.IUserRepository, uv validator.IUserValidator) IUserUsecase {
+	return &userUsecase{ur, uv}
 }
 
 func (uu *userUsecase) SignUp(user model.User) (model.UserResponse, error) {
