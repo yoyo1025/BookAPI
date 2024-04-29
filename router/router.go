@@ -30,6 +30,7 @@ func NewRouter(uc controller.IUserController, bc controller.IBookController) *ec
 	e.POST("/signup", uc.SignUp)
 	e.POST("/login", uc.LogIn)
 	e.POST("/logout", uc.LogOut)
+	e.GET("/csrf", uc.CsrfToken)
 	t := e.Group("/books")
 	t.Use(echojwt.WithConfig(echojwt.Config{
 		SigningKey: []byte(os.Getenv("SELECT")),
