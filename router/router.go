@@ -39,6 +39,7 @@ func NewRouter(uc controller.IUserController, bc controller.IBookController) *ec
 	t.GET("", bc.GetAllBooks)
 	t.GET("/:bookId", bc.GetBookById)
 	t.POST("", bc.CreateBook)
+	t.POST("/upload", bc.UploadPicture)
 	t.PUT("/:bookId", bc.UpdateBook)
 	t.DELETE("/:bookId", bc.DeleteBook)
 	return e
