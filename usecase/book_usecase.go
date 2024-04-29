@@ -20,8 +20,8 @@ type bookUsecase struct {
 	bv validator.IBookValidator
 }
 
-func NewBookUsecase(br repository.IBookRepository) IBookUsecase {
-	return &bookUsecase{br}
+func NewBookUsecase(br repository.IBookRepository, bv validator.IBookValidator) IBookUsecase {
+	return &bookUsecase{br, bv}
 }
 
 func (bu *bookUsecase) GetAllBooks(userId uint) ([]model.BookResponse, error) {
