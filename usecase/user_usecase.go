@@ -3,6 +3,7 @@ package usecase
 import (
 	"BookAPI/model"
 	"BookAPI/repository"
+	"BookAPI/validator"
 	"os"
 	"time"
 
@@ -18,6 +19,7 @@ type IUserUsecase interface {
 // usecaseはrepositoryインターフェースだけに依存する
 type userUsecase struct {
 	ur repository.IUserRepository
+	uv validator.IUserValidator
 }
 
 // usecaseにrepositoryをDIするためのコンストラクタ
