@@ -3,6 +3,7 @@ package usecase
 import (
 	"BookAPI/model"
 	"BookAPI/repository"
+	"BookAPI/validator"
 )
 
 
@@ -16,6 +17,7 @@ type IBookUsecase interface {
 
 type bookUsecase struct {
 	br repository.IBookRepository
+	bv validator.IBookValidator
 }
 
 func NewBookUsecase(br repository.IBookRepository) IBookUsecase {
