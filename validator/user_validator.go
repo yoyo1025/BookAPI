@@ -8,7 +8,7 @@ import (
 )
 
 type IUserValidator interface {
-	UserValidte(user model.User) error
+	UserValidate(user model.User) error
 }
 
 type userValidator struct{}
