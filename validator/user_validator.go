@@ -7,3 +7,7 @@ type IUserValidator interface {
 }
 
 type userValidator struct{}
+
+func NewUserValidator() IUserValidator {
+	return &userValidator{}
+}
