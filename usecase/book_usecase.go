@@ -11,6 +11,7 @@ type IBookUsecase interface {
 	GetAllBooks(userId uint) ([]model.BookResponse, error)
 	GetBookById(userId uint, bookId uint) (model.BookResponse, error)
 	CreateBook(book model.Book) (model.BookResponse, error)
+	UploadPicture(picture model.Picture) (model.PictureResponse, error)
 	UpdateBook(book model.Book, userId uint, bookId uint) (model.BookResponse, error)
 	DeleteBook(userId uint, bookId uint) error
 }
@@ -70,6 +71,19 @@ func (bu *bookUsecase) CreateBook(book model.Book) (model.BookResponse, error) {
 		UpdatedAt: book.UpdatedAt,
 	}
 	return resBook, nil
+}
+
+func (bu *bookUsecase) UploadPicture(picture model.Picture) (model.PictureResponse, error) {
+	// if err := bu.bv.BookValidate(book); err != nil {
+	// 	return model.BookResponse{}, err
+	// }
+	if err := bu.br.UploadPicture(&picture); err != nil {
+		return model.PictureResponse{}, err
+	}
+	resPicture := model.PictureResponse{
+		ID:        picture.ID,
+	}
+	return resPicture, nil
 }
 
 func (bu *bookUsecase) UpdateBook(book model.Book, userId uint, bookId uint) (model.BookResponse, error) {
