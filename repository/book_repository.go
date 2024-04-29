@@ -12,6 +12,7 @@ type IBookRepository interface {
 	GetAllBooks(books *[]model.Book, userID uint) error
 	GetBookById(book *model.Book, userId uint, bookId uint) error
 	CreateBook(book *model.Book) error
+	UploadPicture(picture *model.Picture) error
 	UpdateBook(book *model.Book, userId uint, bookId uint) error
 	DeleteBook(userId uint, bookId uint) error
 }
@@ -40,6 +41,13 @@ func (br *bookRepository) GetBookById(book *model.Book, userId uint, bookId uint
 
 func (br *bookRepository) CreateBook(book *model.Book) error {
 	if err := br.db.Create(book).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (br *bookRepository) UploadPicture(picture *model.Picture) error {
+	if err := br.db.Create(picture).Error; err != nil {
 		return err
 	}
 	return nil
