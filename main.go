@@ -6,14 +6,17 @@ import (
 	"BookAPI/repository"
 	"BookAPI/router"
 	"BookAPI/usecase"
+	"BookAPI/validator"
 )
 
 func main() {
 	db := db.NewDB()
+	userValidator := validator.NewUserValidator()
+	bookValidator := validator.NewBookValidator()
 	userRepository := repository.NewUserRepository(db)
 	bookRepository := repository.NewBookRepository(db)
-	userUsecase := usecase.NewUserUsecase(userRepository)
-	bookUsecase := usecase.NewBookUsecase(bookRepository)
+	userUsecase := usecase.NewUserUsecase(userRepository, userValidator)
+	bookUsecase := usecase.NewBookUsecase(bookRepository, bookValidator)
 	userController := controller.NewUserController(userUsecase)
 	bookController := controller.NewBookController(bookUsecase)
 	e := router.NewRouter(userController, bookController)
