@@ -6,4 +6,8 @@ type IBookValidator interface {
 	BookValidate(book model.Book)
 }
 
-type BookValidator struct{}
+type bookValidator struct{}
+
+func NewBookValidator() IBookValidator {
+	return &bookValidator{}
+}
