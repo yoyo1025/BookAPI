@@ -3,8 +3,10 @@ package controller
 import (
 	"BookAPI/model"
 	"BookAPI/usecase"
+	"io/ioutil"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -14,6 +16,7 @@ type IBookController interface {
 	GetAllBooks(c echo.Context) error
 	GetBookById(c echo.Context) error
 	CreateBook(c echo.Context) error
+	UploadPicture(c echo.Context) error
 	UpdateBook(c echo.Context) error
 	DeleteBook(c echo.Context) error
 }
@@ -67,6 +70,55 @@ func (bc *bookController) CreateBook(c echo.Context) error {
 	}
 	return c.JSON(http.StatusCreated, bookRes)
 }
+
+func (bc *bookController) UploadPicture(c echo.Context) error {
+	// ユーザー情報の取得
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	userId := claims["user_id"]
+
+	// リクエストからファイルを取得
+	form, err := c.MultipartForm()
+	if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "Failed to read multipart form data: "+err.Error())
+	}
+	files := form.File["image"]
+	if len(files) == 0 {
+			return echo.NewHTTPError(http.StatusBadRequest, "No image file found in the request")
+	}
+	file, err := files[0].Open()
+	if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to open image file: "+err.Error())
+	}
+	defer file.Close()
+
+	// ファイルの内容を読み込む
+	imgData, err := ioutil.ReadAll(file)
+	if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to read image file: "+err.Error())
+	}
+
+	// Picture モデルのインスタンスを作成
+	picture := model.Picture{
+			Image:    imgData,
+			UserId:   uint(userId.(float64)),
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+	}
+
+	// データベースに画像を保存
+	pictureRes, err := bc.bu.UploadPicture(picture)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	// 成功レスポンス
+	return c.JSON(http.StatusOK, echo.Map{
+			"message": "Image uploaded successfully",
+			"pictureId": pictureRes.ID,
+	})
+}
+
 
 func (bc *bookController) UpdateBook(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
