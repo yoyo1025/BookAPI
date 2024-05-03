@@ -14,6 +14,7 @@ type IBookUsecase interface {
 	UploadPicture(picture model.Picture) (model.PictureResponse, error)
 	UpdateBook(book model.Book, userId uint, bookId uint) (model.BookResponse, error)
 	DeleteBook(userId uint, bookId uint) error
+	GetPicturesByBookId(bookId uint) ([]model.Picture, error)
 }
 
 type bookUsecase struct {
@@ -35,6 +36,7 @@ func (bu *bookUsecase) GetAllBooks(userId uint) ([]model.BookResponse, error) {
 		t := model.BookResponse{
 			ID: v.ID,
 			Title: v.Title,
+			Comment: v.Comment,
 			CreatedAt: v.CreatedAt,
 			UpdatedAt: v.UpdatedAt,
 		}
@@ -107,4 +109,8 @@ func (bu *bookUsecase) DeleteBook(userId uint, bookId uint) error {
 		return err
 	}
 	return nil
+}
+
+func (bu *bookUsecase) GetPicturesByBookId(bookId uint) ([]model.Picture, error) {
+	return bu.br.GetPicturesByBookId(bookId)
 }

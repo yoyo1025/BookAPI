@@ -3,6 +3,7 @@ package controller
 import (
 	"BookAPI/model"
 	"BookAPI/usecase"
+	"encoding/base64"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -30,16 +31,30 @@ func NewBookController(bu usecase.IBookUsecase) IBookController {
 }
 
 func (bc *bookController) GetAllBooks(c echo.Context) error {
-	user := c.Get("user").(*jwt.Token) // デコード
+	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
-	userId := claims["user_id"]
+	userId := claims["user_id"].(float64)
 
-	booksRes, err := bc.bu.GetAllBooks(uint(userId.(float64)))
+	books, err := bc.bu.GetAllBooks(uint(userId))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
+			return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	return c.JSON(http.StatusOK, booksRes)
+
+	for i, book := range books {
+			pictures, err := bc.bu.GetPicturesByBookId(book.ID)
+			if err != nil {
+					return c.JSON(http.StatusInternalServerError, err.Error())
+			}
+			for j, pic := range pictures {
+					encodedImage := base64.StdEncoding.EncodeToString(pic.Image)
+					pictures[j].ImageBase64 = encodedImage // Assume ImageBase64 field exists
+			}
+			books[i].Pictures = pictures
+	}
+
+	return c.JSON(http.StatusOK, books)
 }
+
 
 func (bc *bookController) GetBookById(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
@@ -98,25 +113,23 @@ func (bc *bookController) UploadPicture(c echo.Context) error {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to read image file: "+err.Error())
 	}
 
-	// Picture モデルのインスタンスを作成
 	picture := model.Picture{
-			Image:    imgData,
-			UserId:   uint(userId.(float64)),
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
-	}
+		Image:    imgData,
+		UserId:   uint(userId.(float64)),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+}
 
-	// データベースに画像を保存
-	pictureRes, err := bc.bu.UploadPicture(picture)
-	if err != nil {
+pictureRes, err := bc.bu.UploadPicture(picture)
+if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
+}
 
-	// 成功レスポンス
-	return c.JSON(http.StatusOK, echo.Map{
-			"message": "Image uploaded successfully",
-			"pictureId": pictureRes.ID,
-	})
+encodedImage := base64.StdEncoding.EncodeToString(picture.Image)
+return c.JSON(http.StatusOK, model.PictureResponse{
+		ID:          pictureRes.ID,
+		ImageBase64: encodedImage,
+})
 }
 
 

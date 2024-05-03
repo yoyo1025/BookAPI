@@ -15,6 +15,7 @@ type IBookRepository interface {
 	UploadPicture(picture *model.Picture) error
 	UpdateBook(book *model.Book, userId uint, bookId uint) error
 	DeleteBook(userId uint, bookId uint) error
+	GetPicturesByBookId(bookId uint) ([]model.Picture, error)
 }
 
 type bookRepository struct {
@@ -73,4 +74,12 @@ func (br *bookRepository) DeleteBook(userId uint, bookId uint) error {
 		return fmt.Errorf("object does not exist")
 	}
 	return nil
+}
+
+func (br *bookRepository) GetPicturesByBookId(bookId uint) ([]model.Picture, error) {
+	var pictures []model.Picture
+	if err := br.db.Where("id = ?", bookId).Find(&pictures).Error; err != nil {
+		return nil, err
+	}
+	return pictures, nil
 }
