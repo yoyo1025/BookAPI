@@ -60,9 +60,6 @@ func (bu *bookUsecase) GetBookById(userId uint, bookId uint) (model.BookResponse
 }
 
 func (bu *bookUsecase) CreateBook(book model.Book) (model.BookResponse, error) {
-	// if err := bu.bv.BookValidate(book); err != nil {
-	// 	return model.BookResponse{}, err
-	// }
 	if err := bu.br.CreateBook(&book); err != nil {
 		return model.BookResponse{}, err
 	}
@@ -76,9 +73,6 @@ func (bu *bookUsecase) CreateBook(book model.Book) (model.BookResponse, error) {
 }
 
 func (bu *bookUsecase) UploadPicture(picture model.Picture) (model.PictureResponse, error) {
-	// if err := bu.bv.BookValidate(book); err != nil {
-	// 	return model.BookResponse{}, err
-	// }
 	if err := bu.br.UploadPicture(&picture); err != nil {
 		return model.PictureResponse{}, err
 	}
@@ -89,9 +83,6 @@ func (bu *bookUsecase) UploadPicture(picture model.Picture) (model.PictureRespon
 }
 
 func (bu *bookUsecase) UpdateBook(book model.Book, userId uint, bookId uint) (model.BookResponse, error) {
-	// if err := bu.bv.BookValidate(book); err != nil {
-	// 	return model.BookResponse{}, err
-	// }
 	if err := bu.br.UpdateBook(&book, userId, bookId); err != nil {
 		return model.BookResponse{}, err
 	}
