@@ -23,9 +23,9 @@ func NewRouter(uc controller.IUserController, bc controller.IBookController) *ec
 		CookiePath: "/",
 		CookieDomain: os.Getenv("API_DOMAIN"),
 		CookieHTTPOnly: true,
-		CookieSameSite: http.SameSiteNoneMode,
-		// CookieSameSite: http.SameSiteDefaultMode, // PostMan用
-		// CookieMaxAge: 60,
+		// CookieSameSite: http.SameSiteNoneMode,
+		CookieSameSite: http.SameSiteDefaultMode, // PostMan用
+		CookieMaxAge: 60,
 	}))
 	e.POST("/signup", uc.SignUp)
 	e.POST("/login", uc.LogIn)
