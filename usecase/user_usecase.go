@@ -35,13 +35,17 @@ func (uu *userUsecase) SignUp(user model.User) (model.UserResponse, error) {
 	if err != nil {
 		return model.UserResponse{}, err
 	}
-	newUser := model.User{Email: user.Email, Password: string(hash)}
+	newUser := model.User{
+		UserName: user.UserName, 
+		Email: user.Email, 
+		Password: string(hash),
+	}
 	if err := uu.ur.CreateUser(&newUser); err != nil {
 		return model.UserResponse{}, err
 	}
 	resUser := model.UserResponse{
 		ID: newUser.ID,
-		Email: newUser.Email,
+		Email: newUser.Email,	
 	}
 	return resUser, nil
 }
