@@ -15,6 +15,7 @@ type IUserUsecase interface {
 	SignUp(user model.User) (model.UserResponse, error)
 	Login(user model.User) (LoginRes, error)
 	GetUserInfo(id string) (model.UserResponse, error)
+	GetUser(username string) (model.UserResponse, error)
 }
 
 // usecaseはrepositoryインターフェースだけに依存する
@@ -59,9 +60,9 @@ func (uu *userUsecase) SignUp(user model.User) (model.UserResponse, error) {
 }
 
 func (uu *userUsecase) Login(user model.User) (LoginRes, error) {
-	if err := uu.uv.UserValidate(user); err != nil {
-			return LoginRes{}, err
-	}
+	// if err := uu.uv.UserValidate(user); err != nil {
+	// 		return LoginRes{}, err
+	// }
 	storedUser := model.User{}
 	if err := uu.ur.GetUserByEmail(&storedUser, user.Email); err != nil {
 			return LoginRes{}, err
@@ -98,5 +99,18 @@ func (uu *userUsecase) GetUserInfo(id string) (model.UserResponse, error) {
 			UserName: user.UserName,
 	}
 
+	return resUser, nil
+}
+
+func (uu *userUsecase) GetUser(username string) (model.UserResponse, error) {
+	var user model.User
+	if err := uu.ur.GetUserByName(&user, username); err != nil {
+		return model.UserResponse{}, err
+	}
+	resUser := model.UserResponse{
+		ID: user.ID,
+		Email: user.Email,
+		UserName: user.UserName,
+	}
 	return resUser, nil
 }

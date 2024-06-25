@@ -20,6 +20,7 @@ type IBookController interface {
 	UploadPicture(c echo.Context) error
 	UpdateBook(c echo.Context) error
 	DeleteBook(c echo.Context) error
+	GetUserBooks(c echo.Context) error
 }
 
 type bookController struct {
@@ -163,4 +164,31 @@ func (bc *bookController) DeleteBook(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	return c.NoContent(http.StatusNoContent)
+}
+
+func (bc *bookController) GetUserBooks(c echo.Context) error {
+	userIdStr := c.Param("userId")
+	userId, err := strconv.ParseUint(userIdStr, 10, 64)
+	if err != nil {
+			return c.JSON(http.StatusBadRequest, echo.Map{"error": "invalid userID format"})
+	}
+
+	books, err := bc.bu.GetAllBooks(uint(userId))
+	if err != nil {
+			return c.JSON(http.StatusInternalServerError, echo.Map{"error": "error retrieving books"})
+	}
+
+	for i, book := range books {
+			pictures, err := bc.bu.GetPicturesByBookId(book.ID)
+			if err != nil {
+					return c.JSON(http.StatusInternalServerError, echo.Map{"error": "error retrieving pictures"})
+			}
+			for j, pic := range pictures {
+					encodedImage := base64.StdEncoding.EncodeToString(pic.Image)
+					pictures[j].ImageBase64 = encodedImage
+			}
+			books[i].Pictures = pictures
+	}
+
+	return c.JSON(http.StatusOK, books)
 }

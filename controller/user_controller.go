@@ -17,6 +17,7 @@ type IUserController interface {
 	LogOut(c echo.Context) error
 	CsrfToken(c echo.Context) error
 	GetUserInfo(c echo.Context) error
+	GetUser(c echo.Context) error
 }
 
 type userController struct {
@@ -92,6 +93,15 @@ func (uc *userController) GetUserInfo(c echo.Context) error {
 	userRes, err := uc.uu.GetUserInfo(id)
 	if err != nil {
 			return c.JSON(http.StatusInternalServerError, echo.Map{"error": err.Error()})
+	}
+	return c.JSON(http.StatusOK, userRes)
+}
+
+func (uc *userController) GetUser(c echo.Context) error {
+	userName := c.Param("username")
+	userRes, err := uc.uu.GetUser(userName)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": err.Error()})
 	}
 	return c.JSON(http.StatusOK, userRes)
 }

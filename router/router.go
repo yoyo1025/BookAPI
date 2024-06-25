@@ -32,6 +32,8 @@ func NewRouter(uc controller.IUserController, bc controller.IBookController) *ec
 	e.POST("/logout", uc.LogOut)
 	e.GET("/csrf", uc.CsrfToken)
 	e.GET("/user/:id", uc.GetUserInfo)
+	e.GET("/user/name/:username", uc.GetUser)
+
 	t := e.Group("/books")
 	t.Use(echojwt.WithConfig(echojwt.Config{
 		SigningKey: []byte(os.Getenv("SECRET")),
@@ -43,5 +45,7 @@ func NewRouter(uc controller.IUserController, bc controller.IBookController) *ec
 	t.POST("/upload", bc.UploadPicture)
 	t.PUT("/:bookId", bc.UpdateBook)
 	t.DELETE("/:bookId", bc.DeleteBook)
+
+	e.GET("/userbooks/:userId", bc.GetUserBooks)
 	return e
 }

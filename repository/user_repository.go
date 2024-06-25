@@ -10,6 +10,7 @@ type IUserRepository interface {
 	GetUserByEmail(user *model.User, email string) error
 	CreateUser(user *model.User) error
 	GetUserById(user *model.User, id string) error
+	GetUserByName(user *model.User, username string) error
 }
 
 type userRepository struct {
@@ -36,4 +37,8 @@ func (ur *userRepository) CreateUser(user *model.User) error {
 
 func (ur *userRepository) GetUserById(user *model.User, id string) error {
 	return ur.db.Where("id = ?", id).First(user).Error
+}
+
+func (ur *userRepository) GetUserByName(user *model.User, username string) error {
+	return ur.db.Where("user_name = ?", username).First(user).Error
 }
