@@ -63,6 +63,7 @@ func (uc *userController) LogIn(c echo.Context) error {
 	return c.JSON(http.StatusOK, userRes)
 }
 
+// テストコメント
 func (uc *userController) LogOut(c echo.Context) error {
 	cookie := new(http.Cookie)
 	cookie.Name = "token"
